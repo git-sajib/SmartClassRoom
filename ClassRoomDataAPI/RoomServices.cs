@@ -24,7 +24,7 @@ namespace ClassRoomDataAPI
 
         public async Task<IEnumerable<RoomStatus>> GetAll()
         {
-            HttpResponseMessage response = await _client.GetAsync("https://smartclassroom-c4c2c-default-rtdb.firebaseio.com/room.json");
+            HttpResponseMessage response = await _client.GetAsync("https://smartclassroom-2e39b-default-rtdb.firebaseio.com/room.json");
             string jsonResponse = await response.Content.ReadAsStringAsync();
 
             //Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();

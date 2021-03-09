@@ -32,7 +32,8 @@ namespace Presentation.WPF
     {
         private readonly IHost _host;
 
-        public App() {
+        public App()
+        {
             _host = CreateHostBuilder().Build();
         }
 
@@ -53,7 +54,7 @@ namespace Presentation.WPF
                     services.AddDbContext<DatabaseContext>(configureDbContext);
                     services.AddSingleton<DatabaseContextFactory>(new DatabaseContextFactory(configureDbContext));
 
-                    services.AddSingleton<IFaceClientServices>(new FaceClientServices(faceEndPoint,faceKey));
+                    services.AddSingleton<IFaceClientServices>(new FaceClientServices(faceEndPoint, faceKey));
                     services.AddSingleton<IFaceServices, FaceServices>();
                     services.AddSingleton<IPasswordHasher, PasswordHasher>();
                     services.AddSingleton<ICourseServices, CourseServices>();
@@ -82,7 +83,7 @@ namespace Presentation.WPF
                     services.AddSingleton<MCourseViewModel>();
                     services.AddSingleton<CoursesViewModel>();
                     services.AddSingleton<AddCourseViewModel>();
-                    
+
                     services.AddSingleton<ViewAttendanceViewModel>();
                     services.AddSingleton<TakeAttendanceViewModel>();
                     services.AddSingleton<RoomStatusViewModel>();
@@ -109,7 +110,7 @@ namespace Presentation.WPF
                     });
                     services.AddSingleton<CreateViewModel<AddLectuerViewModel>>(services =>
                     {
-                        return () => new AddLectuerViewModel(services.GetRequiredService<ICourseServices>(), 
+                        return () => new AddLectuerViewModel(services.GetRequiredService<ICourseServices>(),
                             services.GetRequiredService<ILecturerService>());
                     });
 
@@ -190,13 +191,16 @@ namespace Presentation.WPF
 
                     services.AddSingleton<CreateViewModel<AddStudentViewModel>>(services =>
                     {
-                        return () => new AddStudentViewModel(services.GetRequiredService<ICourseServices>(), 
+                        return () => new AddStudentViewModel(services.GetRequiredService<ICourseServices>(),
                             services.GetRequiredService<IRegistrationService>());
                     });
 
                     services.AddSingleton<CreateViewModel<AddFaceViewModel>>(services =>
                     {
-                        return () => services.GetRequiredService<AddFaceViewModel>();
+                        return () => new AddFaceViewModel(
+                            services.GetRequiredService<IStudentService>(),
+                            services.GetRequiredService<IStudentFaceService>()
+                            );
                     });
                     services.AddSingleton<CreateViewModel<StudentsViewModel>>(services =>
                     {
@@ -233,12 +237,14 @@ namespace Presentation.WPF
                 });
         }
 
-        protected override void OnStartup(StartupEventArgs args) {
+        protected override void OnStartup(StartupEventArgs args)
+        {
             _host.Start();
             DatabaseContextFactory contextFactory = _host.Services.GetRequiredService<DatabaseContextFactory>();
 
-            using (DatabaseContext context = contextFactory.CreateDbContext()) {
-                    context.Database.Migrate();
+            using (DatabaseContext context = contextFactory.CreateDbContext())
+            {
+                context.Database.Migrate();
             }
 
             Window window = _host.Services.GetRequiredService<MainWindow>();

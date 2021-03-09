@@ -1,11 +1,15 @@
 ﻿using Presentation.ViewModels;
+using Presentation.WPF.Commands.Callbcks;
 using Presentation.WPF.State.Authenticators;
 using SmartClassRoom.Domain.Models.Users;
 using SmartClassRoom.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Presentation.UsersV.ViewModels
 {
@@ -17,6 +21,8 @@ namespace Presentation.UsersV.ViewModels
         private readonly IAuthenticator _authenticator;
         private readonly IAttendanceService _attendanceService;
 
+        public ICommand PrintAttendance { get; set; }
+
         public ViewAttendanceViewModel(ILecturerService lecturerService, 
             IAuthenticator authenticator, 
             IAttendanceService attendanceService)
@@ -25,7 +31,20 @@ namespace Presentation.UsersV.ViewModels
             _authenticator = authenticator;
             _attendanceService = attendanceService;
 
+            PrintAttendance = new RelayACommand(AttendancePrint);
+
             LoadAttendance();
+        }
+
+
+        private void AttendancePrint()
+        {
+            if (Items.Count() > 0)
+            {
+                MessageBox.Show("No printer Found", "Can not execute", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            MessageBox.Show("No Attendance Found ", "No record", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private async void LoadAttendance() {

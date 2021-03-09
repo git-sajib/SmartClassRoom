@@ -1,10 +1,13 @@
 ﻿
 using Presentation.ViewModels;
+using Presentation.WPF.Commands.Callbcks;
 using SmartClassRoom.Domain.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Presentation.Admin.ViewModels
 {
@@ -16,14 +19,28 @@ namespace Presentation.Admin.ViewModels
     {
         private readonly ILecturerService lecturserService;
         public ObservableCollection<LecturerListItemViewModel> Items { get; set; } = new ObservableCollection<LecturerListItemViewModel>();
+        public LecturerListItemViewModel SelectLecturerItem { get; set; }
+        public ICommand RemoveItem { get; set; }
 
         #region constructor
         public LecturersViewModel(ILecturerService lecturserService)
         {
             this.lecturserService = lecturserService;
+            RemoveItem = new RelayACommand(RemoveSelectedItem);
             LoadLecturer();
         }
         #endregion
+
+        private void RemoveSelectedItem()
+        {
+
+            if (SelectLecturerItem == null)
+            {
+                MessageBox.Show("Please Select A Lecturer ", "No Lecturer Selected", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            Items.Remove(SelectLecturerItem);
+        }
 
         public async void LoadLecturer() {
             var lecturers = await lecturserService.GetAll();

@@ -1,9 +1,12 @@
 ﻿using Presentation.ViewModels;
+using Presentation.WPF.Commands.Callbcks;
 using SmartClassRoom.Domain.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Presentation.Admin.ViewModels
 {
@@ -16,16 +19,31 @@ namespace Presentation.Admin.ViewModels
         private readonly IStudentService _studentService;
 
         public ObservableCollection<StudentListItemViewModel> Items { get; set; } = new ObservableCollection<StudentListItemViewModel>();
+        public StudentListItemViewModel SelectedStudent { get; set; }
+
+        public ICommand RemoveItem { get; set; }
 
         #region constructor
 
         public StudentsViewModel(IStudentService studentService)
         {
             _studentService = studentService;
+            RemoveItem = new RelayACommand(RemoveSelectedItem);
             LoadAllStudents();
         }
 
         #endregion
+
+        private void RemoveSelectedItem()
+        {
+
+            if (SelectedStudent == null)
+            {
+                MessageBox.Show("Please Select A Student ", "No Student Selected", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            Items.Remove(SelectedStudent);
+        }
 
         private async void LoadAllStudents() {
             var students = await _studentService.GetAll();

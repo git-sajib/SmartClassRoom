@@ -38,6 +38,18 @@
                     </ItemsControl>
                 </ScrollViewer>
             </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <Button Content="Print Attendance" Command="{Binding PrintAttendance}" Padding="7"/>
+                </StackPanel>
+
+            </Grid>
         </Grid>
 
 

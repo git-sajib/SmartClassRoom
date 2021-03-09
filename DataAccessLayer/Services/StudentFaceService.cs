@@ -133,6 +133,7 @@ namespace DataAccessLayer.Services
                         {
                             studentFaceAttendances.Remove(stud);
                             stud.AttendanceType = AttendanceType.Present;
+                            stud.EmotionType = EmotionType.Neutral;
                             studentFaceAttendances.Add(stud);
                         }
                         else
